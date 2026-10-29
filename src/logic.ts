@@ -1,0 +1,5 @@
+import { dishes, type Dish } from './data';
+export type CartEntry={dishId:string;quantity:number;customization:string};
+export function cartSubtotal(cart:CartEntry[],menu: Dish[]=dishes):number{return cart.reduce((sum,line)=>sum+(menu.find(item=>item.id===line.dishId)?.price??0)*line.quantity,0)}
+export function filterDishes(menu:Dish[],category:string,query:string):Dish[]{const q=query.trim().toLocaleLowerCase();return menu.filter(d=>(category==='All'||d.category===category)&&(!q||`${d.name} ${d.description} ${d.labels.join(' ')}`.toLocaleLowerCase().includes(q)))}
+export function validateReservation(form:{date:string;name:string;email:string},today=new Date()):string|null{if(!form.name.trim()||!form.email.trim()||!form.date)return 'Please add your name, email and preferred date.';if(!/^\S+@\S+\.\S+$/.test(form.email))return 'Please enter a valid email address.';const selected=new Date(`${form.date}T00:00:00`);const start=new Date(today.getFullYear(),today.getMonth(),today.getDate());if(Number.isNaN(selected.getTime())||selected<start)return 'Please choose a date from today onward.';return null}
